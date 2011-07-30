@@ -1,3 +1,4 @@
+from chameleon import compiler
 from five.pt.expressions import *
 
 _marker = object()
@@ -27,3 +28,9 @@ def traverse(cls, base, request, path_items):
         return base
 
 BoboAwareZopeTraverse.traverse = classmethod(traverse)
+
+
+def load_econtext(name):
+    return template("econtext[KEY]", KEY=ast.Str(s=name), mode="eval")
+    
+compiler.load_econtext.func_code = load_econtext.func_code

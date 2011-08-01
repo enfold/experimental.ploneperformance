@@ -2,6 +2,7 @@ from zope.publisher import skinnable
 from zope.component import provideAdapter
 from zope.annotation.interfaces import IAnnotations
 from ZPublisher.HTTPRequest import HTTPRequest
+from ofs import quote
 
 def setDefaultSkin(request):
     pass
@@ -65,6 +66,24 @@ def physicalPathToVirtualPath(self, path):
 def taintWrapper(self, enabled=False):
     return self
 
+def conform(self, iface):
+    return iface.__adapt__(self)
+
+def nonzero(self):
+    return True
+
+def physicalPathToURL(self, path, relative=0):
+    """ Convert a physical path into a URL in the current context """
+    path = self._script + [quote(s) for s in self.physicalPathToVirtualPath(path)]
+    if relative:
+        path.insert(0, '')
+    else:
+        path.insert(0, self.other['SERVER_URL'])
+    return '/'.join(path)
+
+HTTPRequest.__conform__ = conform
+HTTPRequest.__nonzero__ = nonzero
 HTTPRequest.taintWrapper = taintWrapper
 HTTPRequest.setVirtualRoot = setVirtualRoot
+HTTPRequest.physicalPathToURL = physicalPathToURL
 HTTPRequest.physicalPathToVirtualPath = physicalPathToVirtualPath

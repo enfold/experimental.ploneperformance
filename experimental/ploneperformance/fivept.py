@@ -1,3 +1,4 @@
+from Acquisition import aq_base
 from chameleon import compiler, utils
 from five.pt.expressions import *
 
@@ -57,7 +58,7 @@ def tt_call(self, base, request, call, *path_items):
 
     return base
 
-#BoboAwareZopeTraverse.__call__ = bt_call
+BoboAwareZopeTraverse.__call__ = bt_call
 TrustedBoboAwareZopeTraverse.__call__ = tt_call
 
 

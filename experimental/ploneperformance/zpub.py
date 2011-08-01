@@ -6,9 +6,8 @@ from ofs import quote
 
 def setDefaultSkin(request):
     pass
-    
-skinnable.setDefaultSkin.func_code = setDefaultSkin.func_code
 
+skinnable.setDefaultSkin.func_code = setDefaultSkin.func_code
 
 def getAnnotations(request):
     if '__annotations__' in request.__dict__:
@@ -16,7 +15,7 @@ def getAnnotations(request):
 
     annotations = {}
     request.__dict__['__annotations__'] = annotations
-        
+
     return annotations
 
 provideAdapter(getAnnotations, (HTTPRequest,), IAnnotations)
@@ -67,6 +66,14 @@ def taintWrapper(self, enabled=False):
     return self
 
 def conform(self, iface):
+    if iface is IAnnotations:
+        try:
+            return self.__dict__['__annotations__']
+        except:
+            annotations = {}
+            self.__dict__['__annotations__'] = annotations
+            return annotations
+
     return iface.__adapt__(self)
 
 def nonzero(self):

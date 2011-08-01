@@ -7,6 +7,9 @@ from OFS.Application import Application
 from OFS.interfaces import IApplication
 from OFS.Traversable import Traversable
 
+_marker = object()
+
+
 def getPhysicalPath(self):
     try:
         id = self.id or self.__name__

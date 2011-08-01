@@ -1,4 +1,5 @@
-from zope.interface import Interface
+from zope.interface import Interface, providedBy
+from zope.interface.adapter import AdapterLookupBase
 from zope.interface.interface import InterfaceClass
 from zope.component import _api, event
 from zope.component import hooks
@@ -27,10 +28,10 @@ InterfaceClass._InterfaceClass__cmp = __cmp
 
 
 def getAdapter(object, interface=Interface, name=u'', context=None):
-    try:
-        return siteinfo.adapter_hook(interface, object, name, default)
-    except ComponentLookupError:
-        return default
+    adapter = siteinfo.adapter_hook(interface, object, name, None)
+    if adapter is None:
+        raise ComponentLookupError(object, interface, name)
+    return adapter
 
 _api.getAdapter.func_code = getAdapter.func_code
 
@@ -72,3 +73,33 @@ def objectEventNotify(event):
     getSiteManager().subscribers((event.object, event), None)
     
 event.objectEventNotify.func_code = objectEventNotify.func_code
+
+
+def queryMultiAdapter(self, objects, provided, name=u'', default=None):
+        factory = self.lookup([providedBy(ob) for ob in objects], provided, name)
+        if factory is None:
+            return default
+                
+        result = factory(*objects)
+        if result is None:
+            return default
+
+        return result
+
+def subscribers(self, objects, provided):
+        subscriptions = self.subscriptions([providedBy(ob) for ob in objects], provided)
+        if provided is None:
+            result = ()
+            for subscription in subscriptions:
+                subscription(*objects)
+        else:
+            result = []
+            for subscription in subscriptions:
+                subscriber = subscription(*objects)
+                if subscriber is not None:
+                    result.append(subscriber)
+        return result
+        
+
+AdapterLookupBase.queryMultiAdapter = queryMultiAdapter
+AdapterLookupBase.subscribers = subscribers

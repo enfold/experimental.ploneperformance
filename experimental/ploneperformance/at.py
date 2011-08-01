@@ -1,5 +1,6 @@
 """ """
 from zope.component import queryUtility
+from ZPublisher.interfaces import UseTraversalDefault
 from Acquisition import aq_base
 from Acquisition import ImplicitAcquisitionWrapper
 from AccessControl import getSecurityManager
@@ -100,7 +101,6 @@ def bobo_traverse(self, REQUEST, name):
         sm = getSiteManager()
         target = sm.adapters.lookup(
             (providedBy(self), providedBy(REQUEST)), Interface, name, None)
-        #target = queryMultiAdapter((self, REQUEST), Interface, name)
         if target is not None:
             target = None
         else:
@@ -114,14 +114,14 @@ def bobo_traverse(self, REQUEST, name):
 BaseObject.__bobo_traverse__ = bobo_traverse
 
 
-def bo_getitem(self, key):
+def bo_getitem(self, key, default=_marker):
     """Overloads the object's item access."""
     schema = self.Schema()
     keys = schema.keys()
 
     if key not in keys:
-        value = getattr(aq_base(self), key, _marker)
-        if value is _marker:
+        value = getattr(aq_base(self), key, default)
+        if value is default:
             raise KeyError, key
         else:
             return value
@@ -189,3 +189,35 @@ def addField(self, field):
     self._fields[name] = field
 
 Schema.Schemata.addField = addField
+
+
+from Products.Archetypes.utils import Vocabulary
+
+def getValue(self, key, default=None):
+    """ """
+    v = self._keys.get(key, None)
+    value = default
+    if v:
+            value = v[1]
+    else:
+            for k, v in self._keys.items():
+                if repr(key) == repr(k):
+                    value = v[1]
+                    break
+
+    if self._i18n_domain and self._instance:
+            msg = self._i18n_msgids.get(key, None) or value
+        
+            if isinstance(msg, Message):
+                return msg
+        
+            if not msg:
+                return ''
+          
+            return translate(msg, self._i18n_domain,
+                             context=self._instance.REQUEST, default=value)
+    else:
+            return value
+
+
+Vocabulary.getValue = getValue

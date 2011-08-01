@@ -79,7 +79,7 @@ def queryMultiAdapter(self, objects, provided, name=u'', default=None):
         factory = self.lookup([providedBy(ob) for ob in objects], provided, name)
         if factory is None:
             return default
-                
+
         result = factory(*objects)
         if result is None:
             return default

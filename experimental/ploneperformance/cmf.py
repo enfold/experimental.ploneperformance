@@ -81,8 +81,7 @@ Action.getInfoData = getInfoData
 
 
 def checkPermissions(self, ec):
-        """ Check permissions in the current context.
-        """
+        """ """
         category = self['category']
         object = ec.contexts['object']
         if object is not None and \
@@ -106,7 +105,6 @@ ActionInfo._checkPermissions = checkPermissions
 def listTypeInfo( self, container=None ):
         rval = []
         for t in self.objectValues():
-            #if ITypeInformation.providedBy(t):
             rval.append(t)
         rval = [t for t in rval if t.id]
         if container is not None:
@@ -151,17 +149,17 @@ def skinnable_getattr(self, name):
     """ """
     sd = SKINDATA.get(get_ident())
     if sd is not None:
-                ob, skinname, ignore, resolve = sd
-                if not name in ignore:
-                    if name in resolve:
-                        return resolve[name]
-                    subob = getattr(ob, name, _MARKER)
-                    if subob is not _MARKER:
-                        retval = aq_base(subob)
-                        resolve[name] = retval
-                        return retval
-                    else:
-                        ignore[name] = 1
+        ob, skinname, ignore, resolve = sd
+        if not name in ignore:
+            if name in resolve:
+                return resolve[name]
+            subob = getattr(ob, name, _MARKER)
+            if subob is not _MARKER:
+                retval = aq_base(subob)
+                resolve[name] = retval
+                return retval
+            else:
+                ignore[name] = 1
     raise AttributeError, name
 
 

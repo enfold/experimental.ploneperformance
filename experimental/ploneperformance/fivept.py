@@ -89,7 +89,7 @@ def tt_call(self, base, request, call, *path_items):
     if stypes:
         raise LocationError(base, path_items[0])
 
-    if tt is dict and len(path_items)==1:
+    if tt is dict and path_items:
         try:
             base = base[path_items[0]]
             path_items = path_items[1:]

@@ -96,3 +96,41 @@ def guarded_getattr(inst, name, default=_marker):
     res = c_guarded_getattr(inst, name, default)
     cache[k] = res
     return res
+
+
+from AccessControl import ZopeSecurityPolicy
+from AccessControl.PermissionRole import rolesForPermissionOn
+
+def getRoles(container, name, value, default):
+    global rolesForPermissionOn
+
+    roles = getattr(value, '__roles__', _noroles)
+    if roles is _noroles:
+        if not name or not type(name) in (str, unicode):
+            return default
+
+        if type(value) is MethodType:
+            container = value.im_self
+
+        cls = getattr(container, '__class__', None)
+        if cls is None:
+            return default
+
+        roles = getattr(cls, '%s__roles__'%name, _noroles)
+        if roles is _noroles:
+            return default
+
+        value = container
+
+    if roles is None or type(roles) in tuple_or_list:
+        return roles
+
+    rolesForPermissionOn = getattr(roles, 'rolesForPermissionOn', None)
+    if rolesForPermissionOn is not None:
+        roles = rolesForPermissionOn(value)
+
+    return roles
+
+
+ZopeSecurityPolicy.getRoles.func_code = getRoles.func_code
+ZopeSecurityPolicy.rolesForPermissionOn = rolesForPermissionOn

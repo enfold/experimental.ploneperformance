@@ -1,9 +1,10 @@
 from DateTime.pytz_support import *
+from DateTime.pytz_support import _numeric_timezones
 
 PytzCache._cache = {}
 
 def getitem(self, key):
-        name = self._zmap.get(key.lower(), key) # fallback to key
+        name = self._zmap.get(key.lower(), key)
         try:
             return self._cache[name]
         except KeyError:
@@ -14,15 +15,16 @@ def getitem(self, key):
             return tz
         except pytz.UnknownTimeZoneError:
             try:
-                name = _numeric_timezones[name]
+                name2 = _numeric_timezones[name]
                 try:
-                    return self._cache[name]
+                    return self._cache[name2]
                 except KeyError:
                     pass
                 tz = Timezone(name)
                 self._cache[name] = tz
+                self._cache[name2] = tz
                 return tz
             except KeyError:
-                raise DateTimeError,'Unrecognized timezone: %s' % key
+                raise DateTimeError,'Unrecognized timezone: %s' % name
 
 PytzCache.__getitem__ = getitem

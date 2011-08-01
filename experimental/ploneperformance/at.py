@@ -6,7 +6,7 @@ from AccessControl import getSecurityManager
 from Products.CMFCore.utils import getToolByName
 from Products.Archetypes import Field
 from Products.Archetypes.utils import DisplayList
-from Products.Archetypes.BaseObject import BaseObject, ISchema, getSchemata
+from Products.Archetypes.BaseObject import _marker, BaseObject, ISchema, getSchemata
 from Products.Archetypes.ExtensibleMetadata import _, ExtensibleMetadata
 try:
     from plone.i18n.locales.interfaces import IMetadataLanguageAvailability
@@ -112,6 +112,30 @@ def bobo_traverse(self, REQUEST, name):
             raise AttributeError(name)
 
 BaseObject.__bobo_traverse__ = bobo_traverse
+
+
+def bo_getitem(self, key):
+    """Overloads the object's item access."""
+    schema = self.Schema()
+    keys = schema.keys()
+
+    if key not in keys:
+        value = getattr(aq_base(self), key, _marker)
+        if value is _marker:
+            raise KeyError, key
+        else:
+            return value
+
+    field = schema[key]
+    accessor = field.getEditAccessor(self)
+    if not accessor:
+        accessor = field.getAccessor(self)
+
+    kw = {'raw':1, 'field': field.__name__}
+    value = mapply(accessor, **kw)
+    return value
+
+BaseObject.__getitem__ = bo_getitem
 
 
 def languages(self):

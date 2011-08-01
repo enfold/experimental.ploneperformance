@@ -50,6 +50,7 @@ Traversable._v_PhysicalPath = None
 Traversable.getPhysicalPath = getPhysicalPath  
 
 from acl import localData
+orig_restrictedTraverse = Traversable.restrictedTraverse
 orig_unrestrictedTraverse = Traversable.unrestrictedTraverse
 
 def unrestrictedTraverse(self, path, default=modTraversable._marker, restricted=False):
@@ -70,6 +71,10 @@ def unrestrictedTraverse(self, path, default=modTraversable._marker, restricted=
     cache[k] = res
     return res
 
+def restrictedTraverse(self, path, default=modTraversable._marker):
+    return unrestrictedTraverse(self, path, default, True)
+
+Traversable.restrictedTraverse = restrictedTraverse
 Traversable.unrestrictedTraverse = unrestrictedTraverse
 
 

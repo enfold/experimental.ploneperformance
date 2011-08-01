@@ -54,7 +54,7 @@ def listPlugins(self, plugin_type):
         parent = aq_parent(aq_inner(self))
 
         for plugin_id in self._getPlugins(plugin_type):
-            plugin = parent._getOb(plugin_id)
+            plugin = getattr(parent, plugin_id)
             if not _satisfies(plugin, plugin_type):
                 logger.debug('Active plugin %s no longer implements %s'
                                 % (plugin_id, plugin_type)

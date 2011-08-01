@@ -139,3 +139,31 @@ def getTypeInfo( self, contentType ):
 TypesTool.listTypeInfo = listTypeInfo
 TypesTool.listContentTypes = listContentTypes
 TypesTool.getTypeInfo = getTypeInfo
+
+
+from thread import get_ident
+from Products.CMFCore.PortalObject import PortalObjectBase
+from Products.CMFCore.Skinnable import \
+    SkinnableObjectManager, SKINDATA, _MARKER
+
+
+def skinnable_getattr(self, name):
+    """ """
+    sd = SKINDATA.get(get_ident())
+    if sd is not None:
+                ob, skinname, ignore, resolve = sd
+                if not name in ignore:
+                    if name in resolve:
+                        return resolve[name]
+                    subob = getattr(ob, name, _MARKER)
+                    if subob is not _MARKER:
+                        retval = aq_base(subob)
+                        resolve[name] = retval
+                        return retval
+                    else:
+                        ignore[name] = 1
+    raise AttributeError, name
+
+
+PortalObjectBase.__getattr__ = skinnable_getattr
+SkinnableObjectManager.__getattr__ = skinnable_getattr

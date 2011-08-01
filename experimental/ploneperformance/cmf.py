@@ -96,8 +96,8 @@ ActionInfo._checkPermissions = checkPermissions
 def listTypeInfo( self, container=None ):
         rval = []
         for t in self.objectValues():
-            if ITypeInformation.providedBy(t):
-                rval.append(t)
+            #if ITypeInformation.providedBy(t):
+            rval.append(t)
         rval = [t for t in rval if t.id]
         if container is not None:
             rval = [t for t in rval if t.isConstructionAllowed(container)]

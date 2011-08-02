@@ -48,7 +48,30 @@ def getPhysicalPath(self):
     return path
 
 Traversable._v_PhysicalPath = None
-Traversable.getPhysicalPath = getPhysicalPath
+Traversable.getPhysicalPath = getPhysicalPath  
+
+from acl import localData
+orig_unrestrictedTraverse = Traversable.unrestrictedTraverse
+
+def unrestrictedTraverse(self, path, default=_marker, restricted=False):
+    try:
+        cache = localData.cache6
+    except AttributeError:
+        cache = {}
+    
+    if type(path) is not str:
+        k = (self, tuple(path), restricted)
+    else:
+        k = (self, path, restricted)
+
+    if k in cache:
+        return cache[k]
+
+    res = orig_unrestrictedTraverse(self, path, default, restricted)
+    cache[k] = res
+    return res
+
+Traversable.unrestrictedTraverse = unrestrictedTraverse
 
 
 # urllib

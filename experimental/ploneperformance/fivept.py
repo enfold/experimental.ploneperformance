@@ -1,8 +1,12 @@
 from Acquisition import aq_base
 from chameleon import compiler, utils
 from five.pt.expressions import *
+from five.pt.expressions import RestrictionTransform
 
 _marker = object()
+
+from acl import guarded_getattr
+RestrictionTransform.secured['_getattr_'] = guarded_getattr
 
 
 def traverse(cls, base, request, path_items, 

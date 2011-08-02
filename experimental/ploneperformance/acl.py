@@ -68,6 +68,7 @@ def init(self, ident, context):
     localData.cache3 = {}
     localData.cache4 = {}
     localData.cache5 = {}
+    localData.cache6 = {}
 
 def checkPermission(self, permission, object):
     k = (permission, object)
@@ -95,9 +96,6 @@ def guarded_getattr(inst, name, default=_marker):
     res = c_guarded_getattr(inst, name, default)
     cache[k] = res
     return res
-
-from five.pt.expressions import RestrictionTransform
-RestrictionTransform.secured['_getattr_'] = guarded_getattr
 
 
 def getRoles(container, name, value, default):

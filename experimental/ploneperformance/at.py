@@ -1,11 +1,12 @@
 """ """
 from zope.component import queryUtility
 from Acquisition import aq_base
+from Acquisition import ImplicitAcquisitionWrapper
 from AccessControl import getSecurityManager
 from Products.CMFCore.utils import getToolByName
 from Products.Archetypes import Field
 from Products.Archetypes.utils import DisplayList
-from Products.Archetypes.BaseObject import BaseObject
+from Products.Archetypes.BaseObject import BaseObject, ISchema, getSchemata
 from Products.Archetypes.ExtensibleMetadata import _, ExtensibleMetadata
 try:
     from plone.i18n.locales.interfaces import IMetadataLanguageAvailability
@@ -54,8 +55,34 @@ Field.Field.checkPermission = checkPermission
 def getCharset(self):
     """ """
     return 'utf-8'
+
+def Schemata(self):
+        """Returns the Schemata for the Object.
+        """
+        if self._v_cache_schemata is not None:
+            return self._v_cache_schemata
+
+        s = getSchemata(self)
+        self._v_cache_schemata = s
+        return s
+
+def Schema(self):
+        """Return a (wrapped) schema instance for this object instance.
+        """
+        if self._v_cache_schema is not None:
+           return self._v_cache_schema
+
+        res = ImplicitAcquisitionWrapper(ISchema(self), self)
+        self._v_cache_schema = res
+        return res
+
     
+BaseObject._v_cache_schema = None
+BaseObject._v_cache_schemata = None
 BaseObject.getCharset = getCharset
+BaseObject.Schemata = Schemata
+BaseObject.Schema = Schema
+
 
 from zope.component import getSiteManager
 from zope.interface import Interface, providedBy
@@ -125,3 +152,16 @@ def languages(self):
         return dl
 
 ExtensibleMetadata.languages = languages
+
+
+# schemata
+from Products.Archetypes import Schema
+
+def addField(self, field):
+    field = aq_base(field)
+    name = field.__name__
+    if name not in self._names:
+        self._names.append(name)
+    self._fields[name] = field
+
+Schema.Schemata.addField = addField

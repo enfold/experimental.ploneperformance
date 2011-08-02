@@ -73,6 +73,21 @@ def unrestrictedTraverse(self, path, default=modTraversable._marker, restricted=
 Traversable.unrestrictedTraverse = unrestrictedTraverse
 
 
+orig_absolute_url = Traversable.absolute_url
+
+def absolute_url(self, relative=0):
+    """ """
+    if self._v_abs_url is not None:
+        return self._v_abs_url
+    
+    url = orig_absolute_url(self, relative)
+    self._v_abs_url = url
+    return url
+
+Traversable._v_abs_url = None
+Traversable.absolute_url = absolute_url
+
+
 # urllib
 always_safe = ('ABCDEFGHIJKLMNOPQRSTUVWXYZ'
                'abcdefghijklmnopqrstuvwxyz'

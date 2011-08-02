@@ -6,8 +6,7 @@ $Id:  2007-12-12 12:27:02Z fafhrd $
 from OFS.Application import Application
 from OFS.interfaces import IApplication
 from OFS.Traversable import Traversable
-
-_marker = object()
+from OFS import Traversable as modTraversable
 
 
 def getPhysicalPath(self):
@@ -53,7 +52,7 @@ Traversable.getPhysicalPath = getPhysicalPath
 from acl import localData
 orig_unrestrictedTraverse = Traversable.unrestrictedTraverse
 
-def unrestrictedTraverse(self, path, default=_marker, restricted=False):
+def unrestrictedTraverse(self, path, default=modTraversable._marker, restricted=False):
     try:
         cache = localData.cache6
     except AttributeError:
@@ -116,6 +115,8 @@ VirtualHostMonster.quote = quote
 
 # BTreeFolder
 from Products.BTreeFolder2.BTreeFolder2 import BTreeFolder2Base
+
+_marker = object()
 
 def BTreeFolder_getattr(self, name):
     try:

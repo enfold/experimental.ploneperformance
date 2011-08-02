@@ -5,10 +5,17 @@ from zope.component.hooks import getSiteManager
 
 _marker = object()
 
+from acl import localData
+
 def getToolByName(obj, name, default=_marker):
+    cache = getattr(localData, 'cache3', {})
+    if name in cache:
+        return cache[name]
+
     if name in _tool_interface_registry:
         try:
             utility = getSiteManager().getUtility(_tool_interface_registry[name])
+            cache[name] = utility
             if hasattr(utility, '__of__') and aq_parent(utility) is None:
                 utility = utility.__of__(obj)
             return utility
@@ -20,12 +27,15 @@ def getToolByName(obj, name, default=_marker):
     except AttributeError:
         if default is _marker:
             raise
+        cache[name] = tool
         return default
     else:
         if tool is _marker:
             raise AttributeError, name
+        cache[name] = tool
         return tool
 
+Products.CMFCore.utils.localData = localData
 Products.CMFCore.utils.getSiteManager = getSiteManager
 Products.CMFCore.utils.getToolByName.func_code = getToolByName.func_code
 

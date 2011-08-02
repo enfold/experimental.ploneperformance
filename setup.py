@@ -20,6 +20,7 @@ setup(name='experimental.ploneperformance',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'simplejson',
           'Zope2 >= 2.13.8',
           'five.pt >= 2.1.4',
           'Chameleon >= 2.2',

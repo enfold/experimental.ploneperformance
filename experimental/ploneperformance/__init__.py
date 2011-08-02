@@ -1,3 +1,5 @@
+import acl
+
 import cp
 import pts
 import dt
@@ -8,4 +10,4 @@ import ofs
 import cmf
 import pas
 import at
-import acl
+import tinymce

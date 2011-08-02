@@ -11,6 +11,8 @@ _marker = object()
 
 
 def getPhysicalPath(self):
+    if self._v_PhysicalPath is not None:
+        return self._v_PhysicalPath
     try:
         id = self.id or self.__name__
     except:
@@ -42,8 +44,10 @@ def getPhysicalPath(self):
                 except:
                     p = None
 
+    self._v_PhysicalPath = path
     return path
 
+Traversable._v_PhysicalPath = None
 Traversable.getPhysicalPath = getPhysicalPath
 
 

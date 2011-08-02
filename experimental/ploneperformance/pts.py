@@ -39,8 +39,8 @@ def getLanguage(self, langs, env):
         # 'de'), but we don't have 'en-us', then 'en' is preferred
         # to 'de').
         parts = lang.split('-')
-        if len(parts) > 1 and parts[0] in langs:
-            return langs.get(parts[0])
+        if len(parts) > 1 and parts[0] in l_cache:
+            return l_cache.get(parts[0])
     return None
 
 Negotiator.getLanguage = memoize_second(getLanguage)

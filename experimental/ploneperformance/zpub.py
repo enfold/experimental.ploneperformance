@@ -85,7 +85,10 @@ def physicalPathToURL(self, path, relative=0):
     if relative:
         path.insert(0, '')
     else:
-        path.insert(0, self.other['SERVER_URL'])
+        try:
+            path.insert(0, self.other['SERVER_URL'])
+        except:
+            path.insert(0, self['SERVER_URL'])
     return '/'.join(path)
 
 orig_init = HTTPRequest.__init__

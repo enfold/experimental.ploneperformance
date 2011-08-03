@@ -1,5 +1,6 @@
 """ """
 from zope.component import queryUtility
+from zope.i18nmessageid import Message
 from ZPublisher.interfaces import UseTraversalDefault
 from Acquisition import aq_base
 from Acquisition import ImplicitAcquisitionWrapper

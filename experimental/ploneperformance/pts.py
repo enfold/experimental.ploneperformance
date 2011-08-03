@@ -1,8 +1,12 @@
 # Patch the Zope3 negotiator to cache the negotiated languages
+from gettext import GNUTranslations
 from Products.PlacelessTranslationService.memoize import memoize_second
+from Products.PlacelessTranslationService.lazycatalog import LazyGettextMessageCatalog
+from zope.i18n.gettextmessagecatalog import _KeyErrorRaisingFallback
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.i18n.negotiator import Negotiator
 from zope.i18n.negotiator import normalize_langs
+from zope.cachedescriptors.property import Lazy
 
 TEMPLATE_LANGUAGE = ('en',)
 
@@ -44,3 +48,25 @@ def getLanguage(self, langs, env):
     return None
 
 Negotiator.getLanguage = memoize_second(getLanguage)
+
+
+def __init__(self, language, domain, path_to_file):
+    """Initialize the message catalog"""
+    self.language = language
+    self.domain = domain
+    self._path_to_file = path_to_file
+
+def _catalog(self):
+    'See IMessageCatalog'
+    fp = open(self._path_to_file, 'rb')
+    try:
+        catalog = GNUTranslations(fp)
+        catalog.add_fallback(_KeyErrorRaisingFallback())
+        return catalog
+    finally:
+        fp.close()
+
+LazyGettextMessageCatalog.__init__ = __init__
+LazyGettextMessageCatalog._catalog = Lazy(_catalog)
+del LazyGettextMessageCatalog.getMessage
+del LazyGettextMessageCatalog.queryMessage

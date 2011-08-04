@@ -118,3 +118,41 @@ def load_econtext(name):
 compiler.load_econtext.func_code = load_econtext.func_code
 
 del utils.Scope.__getitem__
+
+
+ast = compiler.ast
+param = compiler.param
+
+def visit_Module(self, node):
+        body = []
+            
+        body += template("import re")
+        body += template("import functools")
+        body += template("__marker = object()")
+        body += template(
+            r"g_re_amp = re.compile(r'&(?!([A-Za-z]+|#[0-9]+);)')"
+        )
+        body += template(
+            r"g_re_needs_escape = re.compile(r'[&<>\"\']').search")
+
+        body += template(
+            r"re_whitespace = "
+            r"functools.partial(re.compile('\s+').sub, ' ')",
+        )
+
+        body += template("_guarded_getattr = getattr")
+        
+        # Visit module content
+        program = self.visit(node.program)
+
+        body += [ast.FunctionDef(
+            name=node.name, args=ast.arguments(
+                args=[param(b) for b in self._builtins],
+                defaults=(),
+                ),
+            body=program
+            )]
+
+        return body
+
+compiler.Compiler.visit_Module = visit_Module

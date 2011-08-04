@@ -153,5 +153,5 @@ def BTreeFolder_getOb(self, id, default=_marker):
         else:
             return default
 
-BTreeFolder2Base._getOb = BTreeFolder_getOb
+#BTreeFolder2Base._getOb = BTreeFolder_getOb
 BTreeFolder2Base.__getattr__ = BTreeFolder_getattr

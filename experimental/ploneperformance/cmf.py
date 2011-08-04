@@ -7,6 +7,7 @@ _marker = object()
 
 from acl import localData
 
+
 def getToolByName(obj, name, default=_marker):
     try:
         cache = localData.cache3

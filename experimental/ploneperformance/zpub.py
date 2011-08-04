@@ -1,8 +1,12 @@
+from zope import interface
 from zope.publisher import skinnable
 from zope.component import provideAdapter
 from zope.annotation.interfaces import IAnnotations
 from ZPublisher.HTTPRequest import HTTPRequest
+from Products.CMFDefault.interfaces import ICMFDefaultSkin
 from ofs import quote
+
+interface.classImplements(HTTPRequest, ICMFDefaultSkin)
 
 def setDefaultSkin(request):
     pass
@@ -97,6 +101,7 @@ def init(self, stdin, environ, response, clean=0):
     orig_init(self, stdin, environ, response, clean=0)
     self.debug = self._debug
     self.RESPONSE = self.response
+
 
 HTTPRequest.__init__ = init
 HTTPRequest.__conform__ = conform

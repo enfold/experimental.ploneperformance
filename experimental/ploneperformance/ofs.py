@@ -90,7 +90,7 @@ def absolute_url(self, relative=0):
     return url
 
 Traversable._v_abs_url = None
-Traversable.absolute_url = absolute_url
+#Traversable.absolute_url = absolute_url
 
 
 # urllib

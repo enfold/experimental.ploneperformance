@@ -8,7 +8,8 @@ from AccessControl import getSecurityManager
 from Products.CMFCore.utils import getToolByName
 from Products.Archetypes import Field
 from Products.Archetypes.utils import DisplayList
-from Products.Archetypes.BaseObject import _marker, BaseObject, ISchema, getSchemata
+from Products.Archetypes.BaseObject import \
+    _marker, BaseObject, ISchema, getSchemata, mapply
 from Products.Archetypes.ExtensibleMetadata import _, ExtensibleMetadata
 try:
     from plone.i18n.locales.interfaces import IMetadataLanguageAvailability
@@ -59,24 +60,30 @@ def getCharset(self):
     return 'utf-8'
 
 def Schemata(self):
-        """Returns the Schemata for the Object.
-        """
+    """Returns the Schemata for the Object.
+    """
+    try:
         if self._v_cache_schemata is not None:
             return self._v_cache_schemata
+    except:
+        pass
 
-        s = getSchemata(self)
-        self._v_cache_schemata = s
-        return s
+    s = getSchemata(self)
+    self._v_cache_schemata = s
+    return s
 
 def Schema(self):
-        """Return a (wrapped) schema instance for this object instance.
-        """
+    """Return a (wrapped) schema instance for this object instance.
+    """
+    try:
         if self._v_cache_schema is not None:
-           return self._v_cache_schema
+            return self._v_cache_schema
+    except:
+        pass
 
-        res = ImplicitAcquisitionWrapper(ISchema(self), self)
-        self._v_cache_schema = res
-        return res
+    res = ImplicitAcquisitionWrapper(ISchema(self), self)
+    self._v_cache_schema = res
+    return res
 
     
 BaseObject._v_cache_schema = None

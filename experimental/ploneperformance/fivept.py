@@ -21,7 +21,7 @@ def traverse(cls, base, request, path_items,
                 try:
                     base = base[name]
                     continue
-                except (IndexError, KeyError):
+                except:
                     pass
         else:
             base = _base

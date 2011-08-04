@@ -73,8 +73,13 @@ def init(self, ident, context):
 def checkPermission(self, permission, object):
     k = (permission, object)
     cache = localData.cache
-    if k in cache:
-        return cache[k]
+    try:
+        if k in cache:
+            return cache[k]
+    except:
+        k = (permission, id(object))
+        if k in cache:
+            return cache[k]
 
     res = super(SecurityManager, self).checkPermission(permission, object)
     cache[k] = res

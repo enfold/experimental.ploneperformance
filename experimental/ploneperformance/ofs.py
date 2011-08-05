@@ -7,15 +7,24 @@ from OFS.Application import Application
 from OFS.interfaces import IApplication
 from OFS.Traversable import Traversable
 from OFS import Traversable as modTraversable
+from acl import localData
 
 
-def getPhysicalPath(self):
-    if self._v_PhysicalPath is not None:
-        return self._v_PhysicalPath
+def getPhysicalPath(self, _id = id):
     try:
         id = self.id or self.__name__
     except:
         id = self.getId()
+
+    try:
+        cache = localData.cache2
+    except AttributeError:
+        cache = {}
+
+    k = (1, id, _id(self))
+    if k in cache:
+        return cache[k]
+
 
     path = (id,)
 
@@ -43,13 +52,11 @@ def getPhysicalPath(self):
                 except:
                     p = None
 
-    self._v_PhysicalPath = path
+    cache[k] = path
     return path
 
-Traversable._v_PhysicalPath = None
 Traversable.getPhysicalPath = getPhysicalPath  
 
-from acl import localData
 orig_restrictedTraverse = Traversable.restrictedTraverse
 orig_unrestrictedTraverse = Traversable.unrestrictedTraverse
 
@@ -80,17 +87,27 @@ Traversable.unrestrictedTraverse = unrestrictedTraverse
 
 orig_absolute_url = Traversable.absolute_url
 
-def absolute_url(self, relative=0):
+def absolute_url(self, relative=0, _id=id):
     """ """
-    if self._v_abs_url is not None:
-        return self._v_abs_url
+    try:
+        cache = localData.cache2
+    except AttributeError:
+        cache = {}
+
+    try:
+        id = self.id or self.__name__
+    except:
+        id = self.getId()
+
+    k = (2, _id(self), id, relative)
+    if k in cache:
+        return cache[k]
     
     url = orig_absolute_url(self, relative)
-    self._v_abs_url = url
+    cache[k] = url
     return url
 
-Traversable._v_abs_url = None
-#Traversable.absolute_url = absolute_url
+Traversable.absolute_url = absolute_url
 
 
 # urllib
@@ -144,14 +161,4 @@ def BTreeFolder_getattr(self, name):
     except KeyError:
         raise AttributeError(name)
 
-def BTreeFolder_getOb(self, id, default=_marker):
-    try:
-        return self._tree[id].__of__(self)
-    except KeyError:
-        if default is _marker:
-            raise
-        else:
-            return default
-
-#BTreeFolder2Base._getOb = BTreeFolder_getOb
 BTreeFolder2Base.__getattr__ = BTreeFolder_getattr

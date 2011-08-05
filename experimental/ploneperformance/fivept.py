@@ -58,6 +58,8 @@ def bt_call(self, base, request, call, *path_items):
             base = base[path_items[0]]
             path_items = path_items[1:]
             if not path_items:
+                if type(base) not in types and call and callable(base):
+                    return render(base, request)
                 return base
         except KeyError:
             raise LocationError(base, path_items[0])
@@ -94,6 +96,12 @@ def tt_call(self, base, request, call, *path_items):
             base = base[path_items[0]]
             path_items = path_items[1:]
             if not path_items:
+                if type(base) not in types and call and callable(base):
+                    try:
+                        return base()
+                    except AttributeError, err:
+                        if err.args[0] != '__call__':
+                            raise
                 return base
         except KeyError:
             raise LocationError(base, path_items[0])

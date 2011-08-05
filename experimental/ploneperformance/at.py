@@ -35,9 +35,8 @@ def checkPermission(self, mode, instance):
     try:
         cache = localData.cache4
     except AttributeError:
-        print 'miss'
         cache = {}
-    k = mode, instance
+    k = mode, instance._p_oid
     if k in cache:
         return cache[k]
         

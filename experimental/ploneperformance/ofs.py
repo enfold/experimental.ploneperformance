@@ -81,8 +81,8 @@ def unrestrictedTraverse(self, path, default=modTraversable._marker, restricted=
 def restrictedTraverse(self, path, default=modTraversable._marker):
     return unrestrictedTraverse(self, path, default, True)
 
-Traversable.restrictedTraverse = restrictedTraverse
-Traversable.unrestrictedTraverse = unrestrictedTraverse
+#Traversable.restrictedTraverse = restrictedTraverse
+#Traversable.unrestrictedTraverse = unrestrictedTraverse
 
 
 orig_absolute_url = Traversable.absolute_url

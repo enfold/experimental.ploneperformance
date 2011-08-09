@@ -163,4 +163,4 @@ def visit_Module(self, node):
 
         return body
 
-compiler.Compiler.visit_Module = visit_Module
+#compiler.Compiler.visit_Module = visit_Module

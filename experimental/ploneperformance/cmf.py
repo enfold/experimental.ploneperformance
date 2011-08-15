@@ -15,7 +15,9 @@ def getToolByName(obj, name, default=_marker):
         cache = {}
 
     if name in cache:
-        return cache[name]
+        tool = cache[name]
+        if tool is not None:
+            return tool
 
     if name in _tool_interface_registry:
         try:
@@ -170,3 +172,16 @@ def skinnable_getattr(self, name):
 
 PortalObjectBase.__getattr__ = skinnable_getattr
 SkinnableObjectManager.__getattr__ = skinnable_getattr
+
+
+# fix fix
+from Products.ZCatalog.ZCatalog import ZCatalog
+orig_catalog_object = ZCatalog.catalog_object
+def catalog_object(self, obj, uid=None, idxs=None, update_metadata=1,
+                   pghandler=None):
+    if isinstance(uid, unicode):
+        uid = uid.encode('utf-8')
+    
+    return orig_catalog_object(self, obj, uid, idxs, update_metadata, pghandler)
+
+ZCatalog.catalog_object = catalog_object

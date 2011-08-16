@@ -35,9 +35,9 @@ def traverse(cls, base, request, path_items,
 
     return base
 
-BoboAwareZopeTraverse.traverse = classmethod(traverse)
-BoboAwareZopeTraverse.restricted = True
-TrustedBoboAwareZopeTraverse.restricted = False
+#BoboAwareZopeTraverse.traverse = classmethod(traverse)
+#BoboAwareZopeTraverse.restricted = True
+#TrustedBoboAwareZopeTraverse.restricted = False
 
 types = {type(None):1, str:1, bool:1, unicode:1, list:1}
 
@@ -116,8 +116,8 @@ def tt_call(self, base, request, call, *path_items):
 
     return base
 
-BoboAwareZopeTraverse.__call__ = bt_call
-TrustedBoboAwareZopeTraverse.__call__ = tt_call
+#BoboAwareZopeTraverse.__call__ = bt_call
+#TrustedBoboAwareZopeTraverse.__call__ = tt_call
 
 
 def load_econtext(name):

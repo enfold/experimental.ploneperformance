@@ -88,7 +88,7 @@ def checkPermission(self, permission, object):
 
 localData = local()
 SecurityManager.__init__ = init
-SecurityManager.checkPermission = checkPermission
+#SecurityManager.checkPermission = checkPermission
 
 _marker = object()
 def guarded_getattr(inst, name, default=_marker):

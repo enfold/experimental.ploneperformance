@@ -137,5 +137,5 @@ def getRoles(container, name, value, default):
     return roles
 
 
-ZopeSecurityPolicy.getRoles.func_code = getRoles.func_code
-ZopeSecurityPolicy.rolesForPermissionOn = rolesForPermissionOn
+#ZopeSecurityPolicy.getRoles.func_code = getRoles.func_code
+#ZopeSecurityPolicy.rolesForPermissionOn = rolesForPermissionOn

@@ -106,7 +106,7 @@ def checkPermissions(self, ec):
                 return True
         return False
 
-ActionInfo._checkPermissions = checkPermissions
+#ActionInfo._checkPermissions = checkPermissions
 
 
 def listTypeInfo( self, container=None ):

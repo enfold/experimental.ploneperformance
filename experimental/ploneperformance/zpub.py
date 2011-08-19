@@ -100,7 +100,8 @@ orig_init = HTTPRequest.__init__
 def init(self, stdin, environ, response, clean=0):
     orig_init(self, stdin, environ, response, clean=0)
     self.debug = self._debug
-    #self.RESPONSE = self.response
+    self.RESPONSE = self.response
+    self.other['RESPONSE'] = self.response
 
 
 HTTPRequest.__init__ = init

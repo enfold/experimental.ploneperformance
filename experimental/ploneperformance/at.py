@@ -118,7 +118,7 @@ def bobo_traverse(self, REQUEST, name):
         else:
             raise AttributeError(name)
 
-BaseObject.__bobo_traverse__ = bobo_traverse
+#BaseObject.__bobo_traverse__ = bobo_traverse
 
 
 def bo_getitem(self, key, default=_marker):

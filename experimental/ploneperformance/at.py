@@ -76,13 +76,12 @@ def Schema(self):
     """
     try:
         if self._v_cache_schema is not None:
-            return self._v_cache_schema
+            return ImplicitAcquisitionWrapper(self._v_cache_schema, self)
     except:
         pass
 
-    res = ImplicitAcquisitionWrapper(ISchema(self), self)
-    self._v_cache_schema = res
-    return res
+    self._v_cache_schema = res = ISchema(self)
+    return ImplicitAcquisitionWrapper(res, self)
 
     
 BaseObject._v_cache_schema = None

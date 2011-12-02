@@ -57,8 +57,8 @@ def getPhysicalPath(self, _id = id):
 
 Traversable.getPhysicalPath = getPhysicalPath  
 
-orig_restrictedTraverse = Traversable.restrictedTraverse
-orig_unrestrictedTraverse = Traversable.unrestrictedTraverse
+#orig_restrictedTraverse = Traversable.restrictedTraverse
+#orig_unrestrictedTraverse = Traversable.unrestrictedTraverse
 
 def unrestrictedTraverse(self, path, default=modTraversable._marker, restricted=False):
     try:
@@ -161,4 +161,4 @@ def BTreeFolder_getattr(self, name):
     except KeyError:
         raise AttributeError(name)
 
-BTreeFolder2Base.__getattr__ = BTreeFolder_getattr
+#BTreeFolder2Base.__getattr__ = BTreeFolder_getattr
